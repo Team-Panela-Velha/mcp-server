@@ -1,0 +1,35 @@
+server:
+  port: 8082
+  address: 127.0.0.1
+
+spring:
+  application:
+    name: mcp-pedidos
+
+  ai:
+    mcp:
+      server:
+        name: pokes-e-boas-mcp
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC
+        annotation-scanner:
+          enabled: true
+        streamable-http:
+          mcp-endpoint: /mcp
+       
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pokesboas
+    username: postgres
+    password: "!1Qaz@2wsx"
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 3
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    defer-datasource-initialization: true
