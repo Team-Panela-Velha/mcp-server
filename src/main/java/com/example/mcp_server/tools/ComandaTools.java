@@ -3,8 +3,8 @@ package com.example.mcp_server.tools;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.ai.mcp.annotation.McpTool;
+import org.springframework.ai.mcp.annotation.McpToolParam;
 import org.springframework.stereotype.Component;
 
 import com.example.mcp_server.repository.ComandaRepository;
@@ -17,14 +17,14 @@ public class ComandaTools {
 		this.comandas = comandas;
 	}
 
-	@Tool(name = "listar_comandas_abertas", description = "Lista comandas abertas com mesa, valor registrado, quantidade de pedidos e itens.")
+	@McpTool(name = "listar_comandas_abertas", description = "Lista comandas abertas com mesa, valor registrado, quantidade de pedidos e itens.")
 	public List<Map<String, Object>> listarComandasAbertas() {
 		return ToolExecutionLogger.logResult("listar_comandas_abertas", "{}", comandas::listarAbertas);
 	}
 
-	@Tool(name = "consultar_comanda", description = "Consulta uma comanda pelo ID, incluindo seu resumo e os itens dos pedidos associados.")
+	@McpTool(name = "consultar_comanda", description = "Consulta uma comanda pelo ID, incluindo seu resumo e os itens dos pedidos associados.")
 	public Map<String, Object> consultarComanda(
-			@ToolParam(description = "ID numérico da comanda") Long comandaId) {
+			@McpToolParam(description = "ID numérico da comanda", required = true) Long comandaId) {
 		if (comandaId == null || comandaId <= 0) {
 			throw new IllegalArgumentException("O ID da comanda deve ser positivo.");
 		}
@@ -40,7 +40,7 @@ public class ComandaTools {
 		});
 	}
 
-	@Tool(name = "resumo_operacional", description = "Retorna quantidade total de pedidos, comandas abertas e fechadas, itens por status e receita registrada nas comandas fechadas. A DDL não possui datas para filtrar por período.")
+	@McpTool(name = "resumo_operacional", description = "Retorna quantidade total de pedidos, comandas abertas e fechadas, itens por status e receita registrada nas comandas fechadas. A DDL não possui datas para filtrar por período.")
 	public Map<String, Object> resumoOperacional() {
 		return ToolExecutionLogger.logResult("resumo_operacional", "{}", () -> Map.of(
 				"periodo", "todo o histórico disponível",
