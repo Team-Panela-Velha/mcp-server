@@ -19,7 +19,7 @@ public class ProdutoTools {
 
 	@Tool(name = "listar_produtos", description = "Lista produtos disponíveis do cardápio, com categoria, preço e extras.")
 	public List<Map<String, Object>> listarProdutos() {
-		return produtos.listarDisponiveis();
+		return ToolExecutionLogger.logResult("listar_produtos", "{}", produtos::listarDisponiveis);
 	}
 
 	@Tool(name = "buscar_produto", description = "Busca produtos pelo nome, incluindo preço, disponibilidade, categoria e extras.")
@@ -28,6 +28,6 @@ public class ProdutoTools {
 		if (nome == null || nome.isBlank()) {
 			throw new IllegalArgumentException("Informe um nome ou trecho do nome do produto.");
 		}
-		return produtos.buscarPorNome(nome);
+		return ToolExecutionLogger.logResult("buscar_produto", Map.of("nome", nome), () -> produtos.buscarPorNome(nome));
 	}
 }

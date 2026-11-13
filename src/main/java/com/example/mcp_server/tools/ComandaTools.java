@@ -19,7 +19,7 @@ public class ComandaTools {
 
 	@Tool(name = "listar_comandas_abertas", description = "Lista comandas abertas com mesa, valor registrado, quantidade de pedidos e itens.")
 	public List<Map<String, Object>> listarComandasAbertas() {
-		return comandas.listarAbertas();
+		return ToolExecutionLogger.logResult("listar_comandas_abertas", "{}", comandas::listarAbertas);
 	}
 
 	@Tool(name = "consultar_comanda", description = "Consulta uma comanda pelo ID, incluindo seu resumo e os itens dos pedidos associados.")
@@ -28,21 +28,23 @@ public class ComandaTools {
 		if (comandaId == null || comandaId <= 0) {
 			throw new IllegalArgumentException("O ID da comanda deve ser positivo.");
 		}
-		List<Map<String, Object>> resultados = comandas.buscarPorId(comandaId);
-		if (resultados.isEmpty()) {
-			return Map.of("encontrada", false, "comanda_id", comandaId);
-		}
-		return Map.of(
-				"encontrada", true,
-				"comanda", resultados.getFirst(),
-				"itens", comandas.listarItens(comandaId));
+		return ToolExecutionLogger.logResult("consultar_comanda", Map.of("comandaId", comandaId), () -> {
+			List<Map<String, Object>> resultados = comandas.buscarPorId(comandaId);
+			if (resultados.isEmpty()) {
+				return Map.of("encontrada", false, "comanda_id", comandaId);
+			}
+			return Map.of(
+					"encontrada", true,
+					"comanda", resultados.getFirst(),
+					"itens", comandas.listarItens(comandaId));
+		});
 	}
 
 	@Tool(name = "resumo_operacional", description = "Retorna quantidade total de pedidos, comandas abertas e fechadas, itens por status e receita registrada nas comandas fechadas. A DDL não possui datas para filtrar por período.")
 	public Map<String, Object> resumoOperacional() {
-		return Map.of(
+		return ToolExecutionLogger.logResult("resumo_operacional", "{}", () -> Map.of(
 				"periodo", "todo o histórico disponível",
 				"observacao", "A DDL não possui datas nos pedidos ou nas comandas; não é possível filtrar a receita por período.",
-				"indicadores", comandas.resumoOperacional());
+				"indicadores", comandas.resumoOperacional()));
 	}
 }

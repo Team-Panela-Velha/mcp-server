@@ -28,7 +28,8 @@ public class PedidoTools {
 		if (!STATUS_VALIDOS.contains(statusNormalizado)) {
 			throw new IllegalArgumentException("Status inválido. Use: RECEIVED, IN_PREPARATION, READY ou DELIVERED.");
 		}
-		return pedidos.listarPorStatus(statusNormalizado);
+		return ToolExecutionLogger.logResult("listar_pedidos_por_status", Map.of("status", statusNormalizado),
+				() -> pedidos.listarPorStatus(statusNormalizado));
 	}
 
 	@Tool(name = "consultar_pedido", description = "Consulta os itens e valores de um pedido pelo ID.")
@@ -37,6 +38,7 @@ public class PedidoTools {
 		if (pedidoId == null || pedidoId <= 0) {
 			throw new IllegalArgumentException("O ID do pedido deve ser positivo.");
 		}
-		return pedidos.buscarPorId(pedidoId);
+		return ToolExecutionLogger.logResult("consultar_pedido", Map.of("pedidoId", pedidoId),
+				() -> pedidos.buscarPorId(pedidoId));
 	}
 }
